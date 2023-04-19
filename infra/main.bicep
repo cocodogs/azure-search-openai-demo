@@ -21,8 +21,8 @@ param containerName string = 'content'
 param searchIndexName string = 'gptkbindex'
 param gptDeploymentName string = 'davinci'
 param gptModelName string = 'text-davinci-003'
-param chatGptDeploymentName string = 'chat'
-param chatGptModelName string = 'gpt-35-turbo'
+param chatGptDeploymentName string = 'gpt-4'
+param chatGptModelName string = 'gpt-4'
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''

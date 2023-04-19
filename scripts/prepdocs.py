@@ -38,10 +38,13 @@ parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output
 args = parser.parse_args()
 
 # Use the current user identity to connect to Azure services unless a key is explicitly set for any of them
-default_creds = DefaultAzureCredential(exclude_shared_token_cache_credential=True) if args.searchkey == None or args.storagekey == None else None
+#default_creds = DefaultAzureCredential(exclude_shared_token_cache_credential=True) 
+default_creds = DefaultAzureCredential(exclude_shared_token_cache_credential=True)
+#if args.searchkey == None or args.storagekey == None else None
 search_creds = default_creds if args.searchkey == None else AzureKeyCredential(args.searchkey)
-if not args.skipblobs:
-    storage_creds = default_creds if args.storagekey == None else AzureKeyCredential(args.storagekey)
+#if not args.skipblobs:
+storage_creds = default_creds if args.storagekey == None else args.storagekey
+#if args.storagekey == None else StorageSharedKeyCredential(args.storageaccount, args.storagekey)  
 
 def blob_name_from_file_page(filename, page):
     return os.path.splitext(os.path.basename(filename))[0] + f"-{page}" + ".pdf"
@@ -60,7 +63,7 @@ def upload_blobs(pages):
 
 def remove_blobs(filename):
     if args.verbose: print(f"Removing blobs for '{filename or '<all>'}'")
-    blob_service = BlobServiceClient(account_url=f"https://{args.storageaccount}.blob.core.windows.net", credential=storage_creds)
+    blob_service = BlobServiceClient(account_url=f"https://{args.storageaccount}.blob.core.windows.net", credential=StorageSharedKeyCredential(args.storageaccount, storage_creds))
     blob_container = blob_service.get_container_client(args.container)
     if blob_container.exists():
         if filename == None:
